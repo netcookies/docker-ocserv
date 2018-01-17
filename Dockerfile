@@ -1,8 +1,9 @@
-FROM alpine:3.4
+FROM alpine:3.6
 
 MAINTAINER Tommy Lau <tommy@gen-new.com>
 
 ENV OC_VERSION=0.11.10
+ENV OC_DOMAIN=example.com
 
 RUN buildDeps=" \
 		curl \
@@ -21,8 +22,7 @@ RUN buildDeps=" \
 		xz \
 	"; \
 	set -x \
-	&& apk add --update gnutls gnutls-utils iptables libev libintl libnl3 libseccomp linux-pam lz4 openssl readline sed \
-	&& apk add $buildDeps \
+	&& apk add --update --virtual .build-deps $buildDeps \
 	&& curl -SL "ftp://ftp.infradead.org/pub/ocserv/ocserv-$OC_VERSION.tar.xz" -o ocserv.tar.xz \
 	&& curl -SL "ftp://ftp.infradead.org/pub/ocserv/ocserv-$OC_VERSION.tar.xz.sig" -o ocserv.tar.xz.sig \
 	&& gpg --keyserver pgp.mit.edu --recv-key 7F343FA7 \
@@ -39,7 +39,14 @@ RUN buildDeps=" \
 	&& cp /usr/src/ocserv/doc/sample.config /etc/ocserv/ocserv.conf \
 	&& cd / \
 	&& rm -fr /usr/src/ocserv \
-	&& apk del $buildDeps \
+	&& runDeps="$( \
+		scanelf --needed --nobanner /usr/local/sbin/ocserv \
+			| awk '{ gsub(/,/, "\nso:", $2); print "so:" $2 }' \
+			| xargs -r apk info --installed \
+			| sort -u \
+		)" \
+	&& apk add --virtual .run-deps $runDeps gnutls-utils iptables \
+	&& apk del .build-deps \
 	&& rm -rf /var/cache/apk/*
 
 # Setup config
@@ -52,8 +59,7 @@ RUN set -x \
 	&& sed -i 's/\.\.\/tests/\/etc\/ocserv/' /etc/ocserv/ocserv.conf \
 	&& sed -i 's/#\(compression.*\)/\1/' /etc/ocserv/ocserv.conf \
 	&& sed -i '/^ipv4-network = /{s/192.168.1.0/10.16.99.0/}' /etc/ocserv/ocserv.conf \
-	&& sed -i '/^default-domain = /{s/example.com/ss.hinterlands.tech/}' /etc/ocserv/ocserv.conf \
-	&& sed -i '/^cert-user-oid = /{s/0.9.2342.19200300.100.1.1/2.5.4.3/}' /etc/ocserv/ocserv.conf \
+	#&& sed -i '/^cert-user-oid = /{s/0.9.2342.19200300.100.1.1/2.5.4.3/}' /etc/ocserv/ocserv.conf \
 	&& sed -i 's/192.168.1.2/8.8.8.8/' /etc/ocserv/ocserv.conf \
 	&& sed -i 's/^route/#route/' /etc/ocserv/ocserv.conf \
 	&& sed -i 's/^no-route/#no-route/' /etc/ocserv/ocserv.conf \
@@ -72,4 +78,3 @@ ENTRYPOINT ["/entrypoint.sh"]
 
 EXPOSE 443
 CMD ["ocserv", "-c", "/etc/ocserv/ocserv.conf", "-f"]
-

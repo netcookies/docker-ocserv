@@ -26,6 +26,8 @@ if [ ! -f /etc/ocserv/certs/server-key.pem ] || [ ! -f /etc/ocserv/certs/server-
 		SRV_DAYS=9999
 	fi
 
+    sed -i "/^default-domain = /{s/example.com/${OC_DOMAIN}/}" /etc/ocserv/ocserv.conf
+
 	# No certification found, generate one
 	mkdir /etc/ocserv/certs
 	cd /etc/ocserv/certs
