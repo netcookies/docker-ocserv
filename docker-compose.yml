@@ -9,8 +9,9 @@ services:
         - "443:443"
         - "443:443/udp"
       volumes:
-        - ${PWD}/certs/server-cert.pem:/etc/ocserv/certs/server-cert.pem
-        - ${PWD}/certs/server-cert.key:/etc/ocserv/certs/server-cert.key
+        - ${PWD}/certs/server-cert.pem:/etc/ocserv/certs/server-cert.pem:ro
+        - ${PWD}/certs/server-key.pem:/etc/ocserv/certs/server-key.pem:ro
+        - ${PWD}/certs:/etc/ocserv/certs
         - ${PWD}/users:/etc/ocserv/users
       environment:
         OC_DOMAIN: support.hinterlands.tech

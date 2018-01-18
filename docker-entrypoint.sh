@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if [ ! -f /etc/ocserv/certs/server-key.pem ] || [ ! -f /etc/ocserv/certs/server-cert.pem ]; then
+if [ ! -f /etc/ocserv/certs/ca-key.pem ] || [ ! -f /etc/ocserv/certs/ca.pem ]; then
 	# Check environment variables
 	if [ -z "$CA_CN" ]; then
 		CA_CN="VPN CA"
@@ -65,8 +65,10 @@ iptables -t nat -A POSTROUTING -j MASQUERADE
 iptables -A FORWARD -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu
 
 # Enable TUN device
-mkdir -p /dev/net
-mknod /dev/net/tun c 10 200
+if [ ! -f /dev/net/tun ]; then
+    mkdir -p /dev/net
+    mknod /dev/net/tun c 10 200
+fi
 chmod 600 /dev/net/tun
 
 # Run OpennConnect Server
