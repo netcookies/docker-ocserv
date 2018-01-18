@@ -4,19 +4,21 @@ services:
     ocserv:
       image: netcookies/docker-ocserv
       restart: always
+      privileged: true
       ports:
         - "443:443"
         - "443:443/udp"
       volumes:
         - ${PWD}/certs/server-cert.pem:/etc/ocserv/certs/server-cert.pem
         - ${PWD}/certs/server-cert.key:/etc/ocserv/certs/server-cert.key
+        - ${PWD}/users:/etc/ocserv/users
       environment:
         OC_DOMAIN: support.hinterlands.tech
         CA_CN: Hinterlands CA
         CA_ORG: Hinterlands.tech
         SRV_CN: Hinterlands Anyconnect
         SRV_ORG: Hinterlands.tech
-        CERT_AUTH: true
+        CERT_AUTH: "true"
       networks:
         ocserv-network:
           ipv4_address: 172.45.1.200

@@ -1,7 +1,7 @@
 #!/bin/bash
 
 init() {
-    WORK="./certs"
+    WORK="/etc/ocserv/certs"
     CA_TMPL="${WORK}/ca.tmpl"
     CA_KEY="${WORK}/ca-key.pem"
     CA_CERT="${WORK}/ca.pem"
@@ -9,7 +9,7 @@ init() {
     USER_TMPL="${WORK}/${USER}.tmpl"
     USER_KEY="${WORK}/${USER}-key.pem"
     USER_CERT="${WORK}/${USER}.pem"
-    USER_P12="./users/${USER}.p12"
+    USER_P12="/etc/ocserv/users/${USER}.p12"
     REVOKED_CERT="${WORK}/revoked.pem"
     CRL_TMPL="${WORK}/crl.tmpl"
     CRL_CERT="${WORK}/crl.pem"

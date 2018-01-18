@@ -31,6 +31,7 @@ if [ ! -f /etc/ocserv/certs/server-key.pem ] || [ ! -f /etc/ocserv/certs/server-
 	# No certification found, generate one
 	mkdir /etc/ocserv/certs
 	cd /etc/ocserv/certs
+    echo "generating...ca-key.pem"
 	certtool --generate-privkey --outfile ca-key.pem
 	cat > ca.tmpl <<-EOCA
 	cn = "$CA_CN"
@@ -42,17 +43,8 @@ if [ ! -f /etc/ocserv/certs/server-key.pem ] || [ ! -f /etc/ocserv/certs/server-
 	cert_signing_key
 	crl_signing_key
 	EOCA
+    echo "generating...ca.pem"
 	certtool --generate-self-signed --load-privkey ca-key.pem --template ca.tmpl --outfile ca.pem
-	certtool --generate-privkey --outfile server-key.pem 
-	cat > server.tmpl <<-EOSRV
-	cn = "$SRV_CN"
-	organization = "$SRV_ORG"
-	expiration_days = $SRV_DAYS
-	signing_key
-	encryption_key
-	tls_www_server
-	EOSRV
-	certtool --generate-certificate --load-privkey server-key.pem --load-ca-certificate ca.pem --load-ca-privkey ca-key.pem --template server.tmpl --outfile server-cert.pem
 
 	# Create a test user
     if [ -z "$CERT_AUTH" ]; then
@@ -61,7 +53,7 @@ if [ ! -f /etc/ocserv/certs/server-key.pem ] || [ ! -f /etc/ocserv/certs/server-
             echo 'test:Route,All:$5$DktJBFKobxCFd7wN$sn.bVw8ytyAaNamO.CvgBvkzDiFR6DaHdUzcif52KK7' > /etc/ocserv/ocpasswd
         fi
     else
-        ocserv_tools.sh
+        ocm
 	fi
 fi
 
