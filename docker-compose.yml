@@ -2,7 +2,7 @@ version: '3'
 services:
 
     ocserv:
-      image: v2ray/official
+      image: netcookies/docker-ocserv
       restart: always
       ports:
         - "443:443"

@@ -24,7 +24,7 @@ init() {
     [[ -f $CA_CERT ]] || certtool --generate-self-signed --load-privkey $CA_KEY --template $CA_TMPL --outfile $CA_CERT
 }
 
-generate() {
+add() {
     # User Template
     cat << _EOF_ > $USER_TMPL
 cn = "$USER"
@@ -43,7 +43,7 @@ _EOF_
     certtool --to-p12 --pkcs-cipher 3des-pkcs12 --load-privkey $USER_KEY --load-certificate $USER_CERT --outfile $USER_P12 --outder
 }
 
-revoke() {
+del() {
     # Copy User Certificate to Revoked Certificate
     cat $USER_CERT >> $REVOKED_CERT
 
@@ -58,18 +58,18 @@ _EOF_
 }
 
 case $1 in
-    generate)
+    add)
         init $2
-        generate
+        add
         ;;
-    revoke)
+    del)
         init $2
-        revoke
+        del
         ;;
     *)
         echo "\
 Usage:
-    $0 generate USER
-    $0 revoke USER
+    $0 add USER
+    $0 del USER
 "
 esac
