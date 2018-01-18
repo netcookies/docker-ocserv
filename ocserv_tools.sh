@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 init() {
     WORK="/etc/ocserv/certs"

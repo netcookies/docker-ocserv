@@ -29,7 +29,7 @@ if [ ! -f /etc/ocserv/certs/server-key.pem ] || [ ! -f /etc/ocserv/certs/server-
     sed -i "/^default-domain = /{s/example.com/${OC_DOMAIN}/}" /etc/ocserv/ocserv.conf
 
 	# No certification found, generate one
-	mkdir /etc/ocserv/certs
+	mkdir -p /etc/ocserv/certs
 	cd /etc/ocserv/certs
     echo "generating...ca-key.pem"
 	certtool --generate-privkey --outfile ca-key.pem
