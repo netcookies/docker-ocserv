@@ -59,7 +59,7 @@ RUN set -x \
 	&& sed -i 's/\.\.\/tests/\/etc\/ocserv/' /etc/ocserv/ocserv.conf \
 	&& sed -i 's/#\(compression.*\)/\1/' /etc/ocserv/ocserv.conf \
 	&& sed -i '/^ipv4-network = /{s/192.168.1.0/10.16.99.0/}' /etc/ocserv/ocserv.conf \
-	#&& sed -i '/^cert-user-oid = /{s/0.9.2342.19200300.100.1.1/2.5.4.3/}' /etc/ocserv/ocserv.conf \
+    && sed -i '/^cert-user-oid = /{s/0.9.2342.19200300.100.1.1/2.5.4.3/}' /etc/ocserv/ocserv.conf \
 	&& sed -i 's/192.168.1.2/8.8.8.8/' /etc/ocserv/ocserv.conf \
 	&& sed -i 's/^route/#route/' /etc/ocserv/ocserv.conf \
 	&& sed -i 's/^no-route/#no-route/' /etc/ocserv/ocserv.conf \

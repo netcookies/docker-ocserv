@@ -1,32 +1,21 @@
 #!/bin/bash
 
 init() {
-    WORK="./work"
+    WORK="./certs"
     CA_TMPL="${WORK}/ca.tmpl"
     CA_KEY="${WORK}/ca-key.pem"
-    CA_CERT="./ca.pem"
+    CA_CERT="${WORK}/ca.pem"
     USER="$1"
     USER_TMPL="${WORK}/${USER}.tmpl"
     USER_KEY="${WORK}/${USER}-key.pem"
     USER_CERT="${WORK}/${USER}.pem"
-    USER_P12="./${USER}.p12"
+    USER_P12="./users/${USER}.p12"
     REVOKED_CERT="${WORK}/revoked.pem"
     CRL_TMPL="${WORK}/crl.tmpl"
-    CRL_CERT="./crl.pem"
+    CRL_CERT="${WORK}/crl.pem"
 
     # Ensure working directory
     [[ -d $WORK ]] || mkdir -p $WORK
-
-    # CA Template
-    [[ -f $CA_TMPL ]] || cat << _EOF_ > $CA_TMPL
-cn = "VPN CA"
-serial = 1
-expiration_days = 3650
-ca
-signing_key
-cert_signing_key
-crl_signing_key
-_EOF_
 
     # CA Private Key
     [[ -f $CA_KEY ]] || certtool --generate-privkey --outfile $CA_KEY

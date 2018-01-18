@@ -1,0 +1,32 @@
+version: '3'
+services:
+
+    ocserv:
+      image: v2ray/official
+      restart: always
+      ports:
+        - "443:443"
+        - "443:443/udp"
+      volumes:
+        - ${PWD}/certs/server-cert.pem:/etc/ocserv/certs/server-cert.pem
+        - ${PWD}/certs/server-cert.key:/etc/ocserv/certs/server-cert.key
+      environment:
+        OC_DOMAIN: support.hinterlands.tech
+        CA_CN: Hinterlands CA
+        CA_ORG: Hinterlands.tech
+        SRV_CN: Hinterlands Anyconnect
+        SRV_ORG: Hinterlands.tech
+        CERT_AUTH: true
+      networks:
+        ocserv-network:
+          ipv4_address: 172.45.1.200
+          aliases:
+            - ocserv
+
+networks:
+  ocserv-network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.45.1.0/24
